@@ -63,7 +63,7 @@ namespace SqlRepoEx.SqlServer
                 command.CommandText = name;
                 foreach (var parameterDefinition in parameterDefinitions)
                 {
-                    command.Parameters.AddWithValue(parameterDefinition.Name, parameterDefinition.Value, parameterDefinition.isNullable,
+                    command.Parameters.AddWithValue(parameterDefinition.Name, parameterDefinition.Value, parameterDefinition.IsNullable,
                        parameterDefinition.DbType, parameterDefinition.Size, parameterDefinition.Direction); ;
                 }
 
@@ -84,7 +84,7 @@ namespace SqlRepoEx.SqlServer
                 command.CommandText = name;
                 foreach (var parameterDefinition in parameterDefinitions)
                 {
-                    command.Parameters.AddWithValue(parameterDefinition.Name, parameterDefinition.Value, parameterDefinition.isNullable,
+                    command.Parameters.AddWithValue(parameterDefinition.Name, parameterDefinition.Value, parameterDefinition.IsNullable,
                         parameterDefinition.DbType, parameterDefinition.Size, parameterDefinition.Direction); ;
                 }
 
@@ -134,7 +134,7 @@ namespace SqlRepoEx.SqlServer
                 foreach (var parameterDefinition in parametersDefinitions)
                 {
 
-                    command.Parameters.AddWithValue(parameterDefinition.Name, parameterDefinition.Value, parameterDefinition.isNullable
+                    command.Parameters.AddWithValue(parameterDefinition.Name, parameterDefinition.Value, parameterDefinition.IsNullable
                         , parameterDefinition.DbType, parameterDefinition.Size, parameterDefinition.Direction);
                 }
                 return command.ExecuteReader(CommandBehavior.CloseConnection).GetParameterCollection(parametersDefinitions);
@@ -155,7 +155,7 @@ namespace SqlRepoEx.SqlServer
                 command.CommandText = name;
                 foreach (var parameterDefinition in parametersDefinitions)
                 {
-                    command.Parameters.AddWithValue(parameterDefinition.Name, parameterDefinition.Value, parameterDefinition.isNullable,
+                    command.Parameters.AddWithValue(parameterDefinition.Name, parameterDefinition.Value, parameterDefinition.IsNullable,
                        parameterDefinition.DbType, parameterDefinition.Size, parameterDefinition.Direction);
                 }
 

@@ -1,26 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.1.0</Version>
-    <Authors>杨斌</Authors>
-    <Company></Company>
-    <Product>SQL RepoEx</Product>
-    <Description>SQL Repo core components and interfaces.  Supports implementation of SQL statement builders that are made available within an implementation of the Repository pattern.
-</Description>
-    <PackageProjectUrl>https://github.com/AzThinker/SqlRepoEx</PackageProjectUrl>
-    <PackageTags>
-sql, repository, builder</PackageTags>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyName>SqlRepoEx</AssemblyName>
-    <RootNamespace>SqlRepoEx</RootNamespace>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
-  </PropertyGroup>
-
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="del   /S /Q  &quot;$(ProjectDir)&quot;*.nupkg" />
-  </Target>
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
 </Project>
-

@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>GettingStartedStatic</RootNamespace>
     <AssemblyName>GettingStartedStatic</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -26,6 +26,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -102,9 +103,9 @@
       <Project>{26D0A1C0-0CD6-4074-B4B6-053E669A7B49}</Project>
       <Name>SqlRepoEx.SqlServer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\SqlRepo\SqlRepoEx.csproj">
+    <ProjectReference Include="..\..\..\SqlRepo\SqlRepoEx.Core.csproj">
       <Project>{9773F144-2310-4B6F-9702-CF67BDBB165E}</Project>
-      <Name>SqlRepoEx</Name>
+      <Name>SqlRepoEx.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

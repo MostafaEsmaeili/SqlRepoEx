@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SqlRepo.SqlServer\SqlRepoEx.SqlServer.csproj" />
-    <ProjectReference Include="..\SqlRepo\SqlRepoEx.csproj" />
+    <ProjectReference Include="..\SqlRepo\SqlRepoEx.Core.csproj" />
   </ItemGroup>
 
 </Project>

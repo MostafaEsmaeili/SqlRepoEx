@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlRepoEx", "SqlRepo\SqlRepoEx.csproj", "{9773F144-2310-4B6F-9702-CF67BDBB165E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlRepoEx.Core", "SqlRepo\SqlRepoEx.Core.csproj", "{9773F144-2310-4B6F-9702-CF67BDBB165E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlRepoEx.SqlServer", "SqlRepo.SqlServer\SqlRepoEx.SqlServer.csproj", "{26D0A1C0-0CD6-4074-B4B6-053E669A7B49}"
 EndProject

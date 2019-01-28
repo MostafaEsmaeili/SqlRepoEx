@@ -1,7 +1,6 @@
 ﻿using SqlRepoEx.Model;
 using SqlRepoEx.SqlServer.CustomAttribute;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace GettingStartedIoC
 {
