@@ -1,19 +1,17 @@
-namespace SqlRepoEx.SqlServer
+﻿using SqlRepoEx.Core;
+
+namespace SqlRepoEx.MsSqlServer
 {
-    internal class GroupBySpecification
+  public class GroupBySpecification : GroupBySpecificationBase
+  {
+    public override string ToString()
     {
-        public string Alias { get; set; }
-        public string Name { get; set; }
-        public string Schema { get; set; }
-        public string Table { get; set; }
-
-        public override string ToString()
-        {
-            var prefix = string.IsNullOrWhiteSpace(this.Alias)
-                       ? $"[{this.Schema}].[{this.Table}]."
-                             : $"[{this.Alias}].";
-
-            return $"{prefix}[{this.Name}]";
-        }
+      string str;
+      if (!string.IsNullOrWhiteSpace(Alias))
+        str = "[" + Alias + "].";
+      else
+        str = "[" + Schema + "].[" + Table + "].";
+      return str + "[" + Name + "]";
     }
+  }
 }

@@ -1,22 +1,10 @@
-﻿using System;
-using SqlRepoEx.Abstractions;
-using SqlRepoEx.SqlServer.Abstractions;
-
-namespace SqlRepoEx.SqlServer.ConnectionProviders
+﻿namespace SqlRepoEx.MsSqlServer.ConnectionProviders
 {
-    public class ConnectionStringConnectionProvider : ISqlConnectionProvider
+  public class ConnectionStringConnectionProvider : MsSqlConnectionProvider
+  {
+    public ConnectionStringConnectionProvider(string connectionString)
     {
-        private readonly string connectionString;
-
-        public ConnectionStringConnectionProvider(string connectionString)
-        {
-            this.connectionString = connectionString;
-        }
-
-        public TConnection Provide<TConnection>()
-            where TConnection: class, IConnection
-        {
-            return new SqlConnectionAdapter(this.connectionString) as TConnection;
-        }
+      this.ConnectionString = connectionString;
     }
+  }
 }

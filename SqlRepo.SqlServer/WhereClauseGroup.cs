@@ -1,26 +1,20 @@
+﻿// Decompiled with JetBrains decompiler
+// Type: SqlRepoEx.MsSqlServer.WhereClauseGroup
+// Assembly: SqlRepoEx.MsSqlServer, Version=2.2.4.0, Culture=neutral, PublicKeyToken=null
+// MVID: F98FB123-BD81-4CDB-A0A3-937FD86504A0
+// Assembly location: C:\Users\m.esmaeili\.nuget\packages\sqlrepoex.mssqlserver\2.2.4\lib\netstandard2.0\SqlRepoEx.MsSqlServer.dll
+
 using System.Collections.Generic;
 using System.Linq;
+using SqlRepoEx.Core;
 
-namespace SqlRepoEx.SqlServer
+namespace SqlRepoEx.MsSqlServer
 {
-    internal class WhereClauseGroup
+  internal class WhereClauseGroup : WhereClauseGroupBase
+  {
+    public override string ToString()
     {
-        public WhereClauseGroup()
-        {
-            this.Groups = new List<WhereClauseGroup>();
-            this.Conditions = new List<WhereClauseCondition>();
-        }
-
-        public WhereClauseGroup Parent { get; set; }
-        public WhereClauseGroupType GroupType { get; set; }
-        public IList<WhereClauseGroup> Groups { get; set; }
-        public IList<WhereClauseCondition> Conditions { get; set; }
-
-        public override string ToString()
-        {
-            var nestedGroups = !this.Groups.Any()? string.Empty: $" {string.Join(" ", this.Groups)}"; 
-            return
-                $"{this.GroupType.ToString() .ToUpperInvariant()} ({string.Join(" ", this.Conditions)}{nestedGroups})";
-        }
+      return GroupType.ToString().ToUpperInvariant() + " (" + string.Join(" ", Conditions) + (!Groups.Any() ? string.Empty : " " + string.Join(" ", Groups)) + ")";
     }
+  }
 }

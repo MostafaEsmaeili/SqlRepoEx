@@ -1,187 +1,53 @@
-using SqlRepoEx.SqlServer.Abstractions;
-using System;
+﻿// Decompiled with JetBrains decompiler
+// Type: SqlRepoEx.MsSqlServer.OrderByClauseBuilder
+// Assembly: SqlRepoEx.MsSqlServer, Version=2.2.4.0, Culture=neutral, PublicKeyToken=null
+// MVID: F98FB123-BD81-4CDB-A0A3-937FD86504A0
+// Assembly location: C:\Users\m.esmaeili\.nuget\packages\sqlrepoex.mssqlserver\2.2.4\lib\netstandard2.0\SqlRepoEx.MsSqlServer.dll
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
+using SqlRepoEx.Core;
+using SqlRepoEx.Core.Abstractions;
 
-namespace SqlRepoEx.SqlServer
+namespace SqlRepoEx.MsSqlServer
 {
-    public class OrderByClauseBuilder : ClauseBuilder, IOrderByClauseBuilder
+  public class OrderByClauseBuilder : OrderByClauseBaseBuilder
+  {
+    private readonly IList<OrderBySpecification> orderBySpecifications = new List<OrderBySpecification>();
+
+    public override IOrderByClauseBuilder FromScratch()
     {
-        private const string ClauseTemplate = "ORDER BY {0}";
-        private readonly IList<OrderBySpecification> orderBySpecifications = new List<OrderBySpecification>();
-
-        public string ActiveAlias { get; private set; }
-
-        public IOrderByClauseBuilder By<TEntity>(Expression<Func<TEntity, object>> selector,
-            params Expression<Func<TEntity, object>>[] additionalSelectors)
-        {
-            return this.By(this.ActiveAlias,
-                this.TableNameFromType<TEntity>(),
-                DefaultSchema,
-                selector,
-                additionalSelectors);
-        }
-
-        public IOrderByClauseBuilder By<TEntity>(string alias,
-            string tableName,
-            Expression<Func<TEntity, object>> selector,
-            params Expression<Func<TEntity, object>>[] additionalSelectors)
-        {
-            return this.By(alias, tableName, DefaultSchema, selector, additionalSelectors);
-        }
-
-        public IOrderByClauseBuilder By<TEntity>(string alias,
-            string tableName,
-            string tableSchema,
-            Expression<Func<TEntity, object>> selector,
-            params Expression<Func<TEntity, object>>[] additionalSelectors)
-        {
-            this.AddOrderBySpecification<TEntity>(alias, tableName, tableSchema, this.GetMemberName(selector));
-            foreach (var additionalSelector in additionalSelectors)
-            {
-                this.AddOrderBySpecification<TEntity>(alias,
-                    tableName,
-                    tableSchema,
-                    this.GetMemberName(additionalSelector));
-            }
-            this.IsClean = false;
-            return this;
-        }
-
-        public IOrderByClauseBuilder ByDescending<TEntity>(Expression<Func<TEntity, object>> selector,
-            params Expression<Func<TEntity, object>>[] additionalSelectors)
-        {
-            return this.ByDescending(this.ActiveAlias,
-                this.TableNameFromType<TEntity>(),
-                DefaultSchema,
-                selector,
-                additionalSelectors);
-        }
-
-        public IOrderByClauseBuilder ByDescending<TEntity>(string alias,
-            Expression<Func<TEntity, object>> selector,
-            params Expression<Func<TEntity, object>>[] additionalSelectors)
-        {
-            return this.ByDescending(alias,
-                this.TableNameFromType<TEntity>(),
-                DefaultSchema,
-                selector,
-                additionalSelectors);
-        }
-
-        public IOrderByClauseBuilder ByDescending<TEntity>(string alias,
-            string tableName,
-            string tableSchema,
-            Expression<Func<TEntity, object>> selector,
-            params Expression<Func<TEntity, object>>[] additionalSelectors)
-        {
-            this.AddOrderBySpecification<TEntity>(alias,
-                tableName,
-                tableSchema,
-                this.GetMemberName(selector),
-                OrderByDirection.Descending);
-            foreach (var additionalSelector in additionalSelectors)
-            {
-                this.AddOrderBySpecification<TEntity>(alias,
-                    tableName,
-                    tableSchema,
-                    this.GetMemberName(additionalSelector),
-                    OrderByDirection.Descending);
-            }
-            this.IsClean = false;
-            return this;
-        }
-
-        #region New 2018.8.20
-        public IOrderByClauseBuilder By<TEntity>(TableAlias alias,
-         string tableName,
-         Expression<Func<TEntity, object>> selector,
-         params Expression<Func<TEntity, object>>[] additionalSelectors)
-        {
-            return By(Utils.Alias(alias), tableName, DefaultSchema, selector, additionalSelectors);
-        }
-
-        public IOrderByClauseBuilder By<TEntity>(TableAlias alias,
-            string tableName,
-            string tableSchema,
-            Expression<Func<TEntity, object>> selector,
-            params Expression<Func<TEntity, object>>[] additionalSelectors)
-        {
-            return By(Utils.Alias(alias), tableName, tableSchema, selector, additionalSelectors);
-        }
-
-
-        public IOrderByClauseBuilder ByDescending<TEntity>(TableAlias alias,
-            Expression<Func<TEntity, object>> selector,
-            params Expression<Func<TEntity, object>>[] additionalSelectors)
-        {
-            return ByDescending(Utils.Alias(alias),
-                TableNameFromType<TEntity>(),
-                DefaultSchema,
-                selector,
-                additionalSelectors);
-        }
-
-        public IOrderByClauseBuilder ByDescending<TEntity>(TableAlias alias,
-            string tableName,
-            string tableSchema,
-            Expression<Func<TEntity, object>> selector,
-            params Expression<Func<TEntity, object>>[] additionalSelectors)
-        {
-            return ByDescending<TEntity>(Utils.Alias(alias), tableName, tableSchema, selector, additionalSelectors);
-        }
-        #endregion
-
-        public IOrderByClauseBuilder FromScratch()
-        {
-            this.orderBySpecifications.Clear();
-            this.IsClean = true;
-            return this;
-        }
-
-        public override string Sql()
-        {
-            return this.orderBySpecifications.Any()
-                       ? string.Format(ClauseTemplate, string.Join(", ", this.orderBySpecifications))
-                       : string.Empty;
-        }
-
-        public IOrderByClauseBuilder UsingAlias(string alias)
-        {
-            this.ActiveAlias = alias;
-            return this;
-        }
-
-        private void AddOrderBySpecification<TEntity>(string alias,
-            string tableName,
-            string tableSchema,
-            string name,
-            OrderByDirection direction = OrderByDirection.Ascending)
-        {
-            if (string.IsNullOrWhiteSpace(alias))
-            {
-                alias = this.ActiveAlias;
-            }
-
-            if (string.IsNullOrWhiteSpace(tableName))
-            {
-                tableName = this.TableNameFromType<TEntity>();
-            }
-
-            if (string.IsNullOrWhiteSpace(tableSchema))
-            {
-                tableSchema = DefaultSchema;
-            }
-
-            this.orderBySpecifications.Add(new OrderBySpecification
-            {
-                Alias = alias,
-                Table = tableName,
-                Schema = tableSchema,
-                Name = name,
-                Direction = direction
-            });
-        }
+      orderBySpecifications.Clear();
+      IsClean = true;
+      return this;
     }
+
+    public override string Sql()
+    {
+      return orderBySpecifications.Any() ? string.Format("ORDER BY {0}", string.Join(", ", orderBySpecifications)) : string.Empty;
+    }
+
+    protected override void AddOrderBySpecification<TEntity>(
+      string alias,
+      string tableName,
+      string tableSchema,
+      string name,
+      OrderByDirection direction = OrderByDirection.Ascending)
+    {
+      if (string.IsNullOrWhiteSpace(alias))
+        alias = ActiveAlias;
+      if (string.IsNullOrWhiteSpace(tableName))
+        tableName = TableNameFromType<TEntity>();
+      if (string.IsNullOrWhiteSpace(tableSchema))
+        tableSchema = "dbo";
+      var bySpecifications = orderBySpecifications;
+      var orderBySpecification = new OrderBySpecification();
+      orderBySpecification.Alias = alias;
+      orderBySpecification.Table = tableName;
+      orderBySpecification.Schema = tableSchema;
+      orderBySpecification.Name = name;
+      orderBySpecification.Direction = direction;
+      bySpecifications.Add(orderBySpecification);
+    }
+  }
 }

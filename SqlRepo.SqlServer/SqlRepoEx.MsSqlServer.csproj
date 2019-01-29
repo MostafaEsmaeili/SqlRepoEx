@@ -12,6 +12,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyName>SqlRepoEx.MsSqlServer</AssemblyName>
+    <RootNamespace>SqlRepoEx.MsSqlServer</RootNamespace>
   </PropertyGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
@@ -20,9 +22,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.5.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
   </ItemGroup>
 
   <ItemGroup>

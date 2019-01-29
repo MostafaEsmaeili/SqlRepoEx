@@ -1,33 +1,31 @@
-namespace SqlRepoEx.SqlServer
+﻿// Decompiled with JetBrains decompiler
+// Type: SqlRepoEx.MsSqlServer.JoinCondition
+// Assembly: SqlRepoEx.MsSqlServer, Version=2.2.4.0, Culture=neutral, PublicKeyToken=null
+// MVID: F98FB123-BD81-4CDB-A0A3-937FD86504A0
+// Assembly location: C:\Users\m.esmaeili\.nuget\packages\sqlrepoex.mssqlserver\2.2.4\lib\netstandard2.0\SqlRepoEx.MsSqlServer.dll
+
+using SqlRepoEx.Core;
+
+namespace SqlRepoEx.MsSqlServer
 {
-    internal class JoinCondition
+  internal class JoinCondition : JoinConditionBase
+  {
+    public override string ToString()
     {
-        private const string Template = "{0} {1} {2} {3}";
-        public string LeftIdentifier { get; set; }
-        public string LeftTableAlias { get; set; }
-        public string LeftTableName { get; set; }
-        public string LeftTableSchema { get; set; }
-        public LogicalOperator LogicalOperator { get; set; }
-        public string Operator { get; set; }
-        public string RightIdentifier { get; set; }
-        public string RightTableAlias { get; set; }
-        public string RightTableName { get; set; }
-        public string RightTableSchema { get; set; }
-
-        public override string ToString()
-        {
-            var actualOperator = LogicalOperator == LogicalOperator.NotSet
-                ? "ON"
-                : LogicalOperator.ToString()
-                    .ToUpperInvariant();
-            var leftIdentifier = string.IsNullOrWhiteSpace(LeftTableAlias)
-                ? $"[{LeftTableSchema}].[{LeftTableName}].[{LeftIdentifier}]"
-                : $"[{LeftTableAlias}].[{LeftIdentifier}]";
-
-            var rightIdentifier = string.IsNullOrWhiteSpace(RightTableAlias)
-                ? $"[{RightTableSchema}].[{RightTableName}].[{RightIdentifier}]"
-                : $"[{RightTableAlias}].[{RightIdentifier}]";
-            return string.Format(Template, actualOperator, leftIdentifier, Operator, rightIdentifier);
-        }
+      var str1 = LogicalOperator == LogicalOperator.NotSet ? "ON" : LogicalOperator.ToString().ToUpperInvariant();
+      string str2;
+      if (!string.IsNullOrWhiteSpace(LeftTableAlias))
+        str2 = "[" + LeftTableAlias + "].[" + LeftIdentifier + "]";
+      else
+        str2 = "[" + LeftTableSchema + "].[" + LeftTableName + "].[" + LeftIdentifier + "]";
+      var str3 = str2;
+      string str4;
+      if (!string.IsNullOrWhiteSpace(RightTableAlias))
+        str4 = "[" + RightTableAlias + "].[" + RightIdentifier + "]";
+      else
+        str4 = "[" + RightTableSchema + "].[" + RightTableName + "].[" + RightIdentifier + "]";
+      var str5 = str4;
+      return string.Format("{0} {1} {2} {3}", (object) str1, (object) str3, (object) Operator, (object) str5);
     }
+  }
 }

@@ -1,27 +1,17 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
-using SqlRepoEx.Abstractions;
-using SqlRepoEx.SqlServer.Abstractions;
+﻿using Microsoft.Extensions.Configuration;
 
-namespace SqlRepoEx.SqlServer.ConnectionProviders
+namespace SqlRepoEx.MsSqlServer.ConnectionProviders
 {
-    public class AppSettingsConnectionProvider : ISqlConnectionProvider
+  public class AppSettingsConnectionProvider : MsSqlConnectionProvider
+  {
+    private readonly IConfiguration configuration;
+    private readonly string connectionName;
+
+    public AppSettingsConnectionProvider(IConfiguration configuration, string connectionName)
     {
-        private readonly IConfiguration configuration;
-        private readonly string connectionName;
-
-        public AppSettingsConnectionProvider(IConfiguration configuration, string connectionName)
-        {
-            this.configuration = configuration;
-            this.connectionName = connectionName;
-        }
-
-        public TConnection Provide<TConnection>()
-            where TConnection: class, IConnection
-        {
-            var connectionString = this.configuration.GetConnectionString(this.connectionName);
-
-            return new SqlConnectionAdapter(connectionString) as TConnection;
-        }
+      this.configuration = configuration;
+      this.connectionName = connectionName;
+      ConnectionString = this.configuration.GetConnectionString(this.connectionName);
     }
+  }
 }

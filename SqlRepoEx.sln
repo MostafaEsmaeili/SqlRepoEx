@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlRepoEx.Core", "SqlRepo\SqlRepoEx.Core.csproj", "{9773F144-2310-4B6F-9702-CF67BDBB165E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlRepoEx.SqlServer", "SqlRepo.SqlServer\SqlRepoEx.SqlServer.csproj", "{26D0A1C0-0CD6-4074-B4B6-053E669A7B49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlRepoEx.MsSqlServer", "SqlRepo.SqlServer\SqlRepoEx.MsSqlServer.csproj", "{26D0A1C0-0CD6-4074-B4B6-053E669A7B49}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlRepoEx.SqlServer.Autofac", "SqlRepo.SqlServer.Autofac\SqlRepoEx.SqlServer.Autofac.csproj", "{E356200B-8442-4A1A-87CC-C59306D4B37F}"
 EndProject

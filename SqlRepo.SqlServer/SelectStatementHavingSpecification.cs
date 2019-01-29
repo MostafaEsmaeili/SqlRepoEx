@@ -1,35 +1,23 @@
-﻿using System;
+﻿// Decompiled with JetBrains decompiler
+// Type: SqlRepoEx.MsSqlServer.SelectStatementHavingSpecification
+// Assembly: SqlRepoEx.MsSqlServer, Version=2.2.4.0, Culture=neutral, PublicKeyToken=null
+// MVID: F98FB123-BD81-4CDB-A0A3-937FD86504A0
+// Assembly location: C:\Users\m.esmaeili\.nuget\packages\sqlrepoex.mssqlserver\2.2.4\lib\netstandard2.0\SqlRepoEx.MsSqlServer.dll
 
-namespace SqlRepoEx.SqlServer
+using SqlRepoEx.Core;
+
+namespace SqlRepoEx.MsSqlServer
 {
-    public class SelectStatementHavingSpecification
+  public class SelectStatementHavingSpecification : SelectStatementHavingSpecificationBase
+  {
+    public override string ToString()
     {
-        public Aggregation Aggregation { get; internal set; }
-        public string Alias { get; internal set; }
-        public Type EntityType { get; internal set; }
-        public string Identifier { get; internal set; }
-        public string Operator { get; internal set; }
-        public object Value { get; internal set; }
-        internal string Schema { get; set; }
-        internal string TableName { get; set; }
-
-        public override string ToString()
-        {
-            var identifierPrefix = string.IsNullOrEmpty(this.Alias)
-                                       ? $"[{this.Schema}].[{this.TableName}]"
-                                       : $"[{this.Alias}]";
-            var identifer = $"{identifierPrefix}.[{this.Identifier}]";
-            return $"{this.ApplyAggregation(identifer)} {this.Operator} {this.Value}";
-        }
-
-        private string ApplyAggregation(string columnExpression)
-        {
-            if(this.Aggregation == Aggregation.Count && this.Identifier == "*")
-            {
-                return "COUNT(*)";
-            }
-
-            return $"{this.Aggregation.ToString() .ToUpperInvariant()}({columnExpression})";
-        }
+      string str;
+      if (!string.IsNullOrEmpty(Alias))
+        str = "[" + Alias + "]";
+      else
+        str = "[" + Schema + "].[" + TableName + "]";
+      return string.Format("{0} {1} {2}", ApplyAggregation(str + ".[" + Identifier + "]"), Operator, Value);
     }
+  }
 }

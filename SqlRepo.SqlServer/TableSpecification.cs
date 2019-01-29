@@ -1,40 +1,22 @@
-using System;
+﻿// Decompiled with JetBrains decompiler
+// Type: SqlRepoEx.MsSqlServer.TableSpecification
+// Assembly: SqlRepoEx.MsSqlServer, Version=2.2.4.0, Culture=neutral, PublicKeyToken=null
+// MVID: F98FB123-BD81-4CDB-A0A3-937FD86504A0
+// Assembly location: C:\Users\m.esmaeili\.nuget\packages\sqlrepoex.mssqlserver\2.2.4\lib\netstandard2.0\SqlRepoEx.MsSqlServer.dll
+
 using System.Collections.Generic;
 using System.Linq;
+using SqlRepoEx.Core;
 
-namespace SqlRepoEx.SqlServer
+namespace SqlRepoEx.MsSqlServer
 {
-    internal class TableSpecification
+  public class TableSpecification : TableSpecificationBase
+  {
+    public override string ToString()
     {
-        private const string Template = "{0} [{1}].[{2}]{3}{4}";
-
-        public TableSpecification()
-        {
-            this.Conditions = new List<JoinCondition>();
-        }
-
-        public IList<JoinCondition> Conditions { get; }
-        public string LeftAlias { get; set; }
-        public string LeftSchema { get; set; }
-        public string LeftTable { get; set; }
-        public Type LeftType { get; set; }
-        public string RightAlias { get; set; }
-        public string RightSchema { get; set; }
-        public string RightTable { get; set; }
-        public Type RightType { get; set; }
-        public string SpecificationType { get; set; }
-
-        public override string ToString()
-        {
-            var conditions = this.Conditions.Any()
-                                 ? $"\n{string.Join("\n", this.Conditions)}"
-                                 : string.Empty;
-            return string.Format(Template,
-                this.SpecificationType,
-                this.RightSchema,
-                this.RightTable,
-                string.IsNullOrWhiteSpace(this.RightAlias) ? string.Empty : $" AS [{this.RightAlias}]",
-                conditions);
-        }
+      var str1 = Conditions.Any() ? "\n" + string.Join("\n", Conditions) : string.Empty;
+      var str2 = "[" + RightAlias + "]";
+      return string.Format("{0} [{1}].[{2}]{3}{4}", (object) SpecificationType, (object) RightSchema, (object) RightTable, string.IsNullOrWhiteSpace(RightAlias) ? (object) string.Empty : (object) (" AS [" + str2 + "]"), (object) str1);
     }
+  }
 }

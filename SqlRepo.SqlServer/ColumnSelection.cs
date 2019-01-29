@@ -1,33 +1,28 @@
-namespace SqlRepoEx.SqlServer
+﻿using SqlRepoEx.Core;
+
+namespace SqlRepoEx.MsSqlServer
 {
-    public class ColumnSelection
+  public class ColumnSelection : ColumnSelectionBase
+  {
+    public string Schema { get; set; }
+
+    public override string ToString()
     {
-        public Aggregation Aggregation { get; set; }
-        public string Alias { get; set; }
-        public string Name { get; set; }
-        public string Schema { get; set; }
-        public string Table { get; set; }
-
-        public override string ToString()
-        {
-            var prefix = string.IsNullOrWhiteSpace(this.Alias)
-                             ? $"[{this.Schema}].[{this.Table}]."
-                             : $"[{this.Alias}].";
-
-            var columnExpression = this.Name == "*"? $"{prefix}*": $"{prefix}[{this.Name}]";
-            return this.Aggregation == Aggregation.None
-                       ? columnExpression
-                       : this.ApplyAggregation(columnExpression);
-        }
-
-        private string ApplyAggregation(string columnExpression)
-        {
-            if(this.Aggregation == Aggregation.Count && this.Name == "*")
-            {
-                return "COUNT(*)";
-            }
-
-            return $"{this.Aggregation.ToString() .ToUpperInvariant()}({columnExpression}) AS [{this.Name}]";
-        }
+      string str1;
+      if (!string.IsNullOrWhiteSpace(Alias))
+        str1 = "[" + Alias + "].";
+      else
+        str1 = "[" + Schema + "].[" + Table + "].";
+      var str2 = str1;
+      var columnExpression = Name == "*" ? str2 + "*" : str2 + "[" + Name + "]";
+      return Aggregation == Aggregation.None ? columnExpression : ApplyAggregation(columnExpression);
     }
+
+    private string ApplyAggregation(string columnExpression)
+    {
+      if (Aggregation == Aggregation.Count && Name == "*")
+        return "COUNT(*)";
+      return Aggregation.ToString().ToUpperInvariant() + "(" + columnExpression + ") AS [" + Name + "]";
+    }
+  }
 }

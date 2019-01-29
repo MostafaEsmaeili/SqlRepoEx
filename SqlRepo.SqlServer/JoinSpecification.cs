@@ -1,49 +1,30 @@
-﻿using System;
+﻿// Decompiled with JetBrains decompiler
+// Type: SqlRepoEx.MsSqlServer.JoinSpecification
+// Assembly: SqlRepoEx.MsSqlServer, Version=2.2.4.0, Culture=neutral, PublicKeyToken=null
+// MVID: F98FB123-BD81-4CDB-A0A3-937FD86504A0
+// Assembly location: C:\Users\m.esmaeili\.nuget\packages\sqlrepoex.mssqlserver\2.2.4\lib\netstandard2.0\SqlRepoEx.MsSqlServer.dll
 
-namespace SqlRepoEx.SqlServer
+using SqlRepoEx.Core;
+
+namespace SqlRepoEx.MsSqlServer
 {
-    public class JoinSpecification
+  public class JoinSpecification : JoinSpecificationBase
+  {
+    public override string ToString()
     {
-        public Type LeftEntityType { get; internal set; }
-        public string LeftIdentifier { get; internal set; }
-        public string LeftTableAlias { get; internal set; }
-        public LogicalOperator LogicalOperator { get; internal set; }
-        public string Operator { get; internal set; }
-        public Type RightEntityType { get; internal set; }
-        public string RightIdentifier { get; internal set; }
-        public string RightTableAlias { get; internal set; }
-        internal string LeftSchema { get; set; }
-        internal string LeftTableName { get; set; }
-        internal string RightSchema { get; set; }
-        internal string RightTableName { get; set; }
-
-        public override string ToString()
-        {
-            var leftPrefix = string.IsNullOrEmpty(LeftTableAlias)
-                ? $"[{LeftSchema}].[{LeftTableName}]"
-                : $"[{LeftTableAlias}]";
-
-            var rightPrefix = string.IsNullOrEmpty(RightTableAlias)
-                ? $"[{RightSchema}].[{RightTableName}]"
-                : $"[{RightTableAlias}]";
-
-            var prefix = GetPrefix();
-
-            return
-                $"\n{prefix} {leftPrefix}.[{LeftIdentifier}] {Operator} {rightPrefix}.[{RightIdentifier}]";
-        }
-
-        private string GetPrefix()
-        {
-            switch (LogicalOperator)
-            {
-                case LogicalOperator.And:
-                    return "AND";
-                case LogicalOperator.Or:
-                    return "OR";
-                default:
-                    return "ON";
-            }
-        }
+      string str1;
+      if (!string.IsNullOrEmpty(LeftTableAlias))
+        str1 = "[" + LeftTableAlias + "]";
+      else
+        str1 = "[" + LeftSchema + "].[" + LeftTableName + "]";
+      var str2 = str1;
+      string str3;
+      if (!string.IsNullOrEmpty(RightTableAlias))
+        str3 = "[" + RightTableAlias + "]";
+      else
+        str3 = "[" + RightSchema + "].[" + RightTableName + "]";
+      var str4 = str3;
+      return "\n" + GetPrefix() + " " + str2 + ".[" + LeftIdentifier + "] " + Operator + " " + str4 + ".[" + RightIdentifier + "]";
     }
+  }
 }

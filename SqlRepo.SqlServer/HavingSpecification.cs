@@ -1,61 +1,24 @@
-using System;
+﻿// Decompiled with JetBrains decompiler
+// Type: SqlRepoEx.MsSqlServer.HavingSpecification
+// Assembly: SqlRepoEx.MsSqlServer, Version=2.2.4.0, Culture=neutral, PublicKeyToken=null
+// MVID: F98FB123-BD81-4CDB-A0A3-937FD86504A0
+// Assembly location: C:\Users\m.esmaeili\.nuget\packages\sqlrepoex.mssqlserver\2.2.4\lib\netstandard2.0\SqlRepoEx.MsSqlServer.dll
 
-namespace SqlRepoEx.SqlServer
+using SqlRepoEx.Core;
+
+namespace SqlRepoEx.MsSqlServer
 {
-    internal class HavingSpecification
+  internal class HavingSpecification : HavingSpecificationBase
+  {
+    public override string ToString()
     {
-        public Aggregation Aggregation { get; set; }
-        public string Alias { get; set; }
-        public Comparison Comparison { get; set; }
-        public string Name { get; set; }
-        public string Schema { get; set; }
-        public string Table { get; set; }
-        public object Value { get; set; }
-
-        public override string ToString()
-        {
-            var prefix = string.IsNullOrWhiteSpace(this.Alias)
-                             ? $"[{this.Schema}].[{this.Table}]."
-                             : $"[{this.Alias}].";
-
-            var columnExpression = this.Name == "*"? $"{prefix}*": $"{prefix}[{this.Name}]";
-            return $"{this.ApplyAggregation(columnExpression)} {this.ComparisonExpression()}";
-        }
-
-        private string ApplyAggregation(string columnExpression)
-        {
-            if(this.Aggregation == Aggregation.Count && this.Name == "*")
-            {
-                return "COUNT(*)";
-            }
-
-            return $"{this.Aggregation.ToString() .ToUpperInvariant()}({columnExpression})";
-        }
-
-        private string ComparisonExpression()
-        {
-            return $"{this.GetOperatorString()} {this.Value}";
-        }
-
-        private string GetOperatorString()
-        {
-            switch(this.Comparison)
-            {
-                case Comparison.Equal:
-                    return "=";
-                case Comparison.GreaterThan:
-                    return ">";
-                case Comparison.LessThan:
-                    return "<";
-                case Comparison.Like:
-                    return "LIKE";
-                case Comparison.NotEqual:
-                    return "<>";
-                case Comparison.NotLike:
-                    return "NOT LIKE";
-                default:
-                    return null;
-            }
-        }
+      string str1;
+      if (!string.IsNullOrWhiteSpace(Alias))
+        str1 = "[" + Alias + "].";
+      else
+        str1 = "[" + Schema + "].[" + Table + "].";
+      var str2 = str1;
+      return ApplyAggregation(Name == "*" ? str2 + "*" : str2 + "[" + Name + "]") + " " + ComparisonExpression();
     }
+  }
 }

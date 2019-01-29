@@ -1,577 +1,120 @@
-using SqlRepoEx.SqlServer.Abstractions;
+﻿// Decompiled with JetBrains decompiler
+// Type: SqlRepoEx.MsSqlServer.WhereClauseBuilder
+// Assembly: SqlRepoEx.MsSqlServer, Version=2.2.4.0, Culture=neutral, PublicKeyToken=null
+// MVID: F98FB123-BD81-4CDB-A0A3-937FD86504A0
+// Assembly location: C:\Users\m.esmaeili\.nuget\packages\sqlrepoex.mssqlserver\2.2.4\lib\netstandard2.0\SqlRepoEx.MsSqlServer.dll
+
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Atk.AtkExpression;
+using SqlRepoEx.Core;
+using SqlRepoEx.Core.Abstractions;
 
-namespace SqlRepoEx.SqlServer
+namespace SqlRepoEx.MsSqlServer
 {
-    public class WhereClauseBuilder : ClauseBuilder, IWhereClauseBuilder
+  public class WhereClauseBuilder : WhereClauseBaseBuilder
+  {
+    protected override void AddBetweenConditionToCurrentGroup<TEntity, TMember>(
+      Expression<Func<TEntity, TMember>> selector,
+      TMember start,
+      TMember end,
+      LogicalOperator locigalOperator,
+      string alias,
+      string tableName,
+      string tableSchema)
     {
-        private WhereClauseGroup currentGroup;
-        private WhereClauseGroup rootGroup;
-
-        public IWhereClauseBuilder And<TEntity>(Expression<Func<TEntity, bool>> expression,
-            string alias = null,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            ThrowIfNotInitialised();
-            return AddConditionToCurrentGroup(expression,
-                LogicalOperator.And,
-                alias,
-                tableName,
-                tableSchema);
-        }
-
-        public IWhereClauseBuilder AndBetween<TEntity, TMember>(Expression<Func<TEntity, TMember>> selector,
-            TMember start,
-            TMember end,
-            string alias = null,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            AddBetweenConditionToCurrentGroup(selector,
-                start,
-                end,
-                LogicalOperator.And,
-                alias,
-                tableName,
-                tableSchema);
-            return this;
-        }
-
-        public IWhereClauseBuilder AndIn<TEntity, TMember>(Expression<Func<TEntity, TMember>> selector,
-            TMember[] values,
-            string alias = null,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            ThrowIfNotInitialised();
-
-            AddInConditionToCurrentGroup(selector,
-                values,
-                LogicalOperator.And,
-                alias,
-                tableName,
-                tableSchema);
-
-            return this;
-        }
-
-        public IWhereClauseBuilder EndNesting()
-        {
-            if (currentGroup != null && currentGroup.Parent != null)
-            {
-                currentGroup = currentGroup.Parent;
-            }
-            return this;
-        }
-
-        public IWhereClauseBuilder NestedAnd<TEntity>(Expression<Func<TEntity, bool>> expression,
-            string alias = null,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            return AddNestedGroupToCurrentGroup(expression,
-                WhereClauseGroupType.And,
-                alias,
-                tableName,
-                tableSchema);
-        }
-
-        public IWhereClauseBuilder NestedOr<TEntity>(Expression<Func<TEntity, bool>> expression,
-            string alias = null,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            return AddNestedGroupToCurrentGroup(expression,
-                WhereClauseGroupType.Or,
-                alias,
-                tableName,
-                tableSchema);
-        }
-
-        public IWhereClauseBuilder Or<TEntity>(Expression<Func<TEntity, bool>> expression,
-            string alias = null,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            return AddConditionToCurrentGroup(expression,
-                LogicalOperator.Or,
-                alias,
-                tableName,
-                tableSchema);
-        }
-
-        public IWhereClauseBuilder OrBetween<TEntity, TMember>(Expression<Func<TEntity, TMember>> selector,
-            TMember start,
-            TMember end,
-            string alias = null,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            AddBetweenConditionToCurrentGroup(selector,
-                start,
-                end,
-                LogicalOperator.Or,
-                alias,
-                tableName,
-                tableSchema);
-            return this;
-        }
-
-        public IWhereClauseBuilder OrIn<TEntity, TMember>(Expression<Func<TEntity, TMember>> selector,
-            TMember[] values,
-            string alias = null,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            ThrowIfNotInitialised();
-
-            AddInConditionToCurrentGroup(selector,
-                values,
-                LogicalOperator.Or,
-                alias,
-                tableName,
-                tableSchema);
-
-            return this;
-        }
-
-        public override string Sql()
-        {
-            return rootGroup?.ToString() ?? string.Empty;
-        }
-
-        public IWhereClauseBuilder Where<TEntity>(Expression<Func<TEntity, bool>> expression,
-            string alias = null,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            Initialise();
-            AddConditionToCurrentGroup(expression, LogicalOperator.NotSet, alias, tableName, tableSchema);
-            IsClean = false;
-            return this;
-        }
-
-        public IWhereClauseBuilder WhereBetween<TEntity, TMember>(Expression<Func<TEntity, TMember>> selector,
-            TMember start,
-            TMember end,
-            string alias = null,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            Initialise();
-            AddBetweenConditionToCurrentGroup(selector,
-                start,
-                end,
-                LogicalOperator.NotSet,
-                alias,
-                tableName,
-                tableSchema);
-            return this;
-        }
-
-        public IWhereClauseBuilder WhereIn<TEntity, TMember>(Expression<Func<TEntity, TMember>> selector,
-            TMember[] values,
-            string alias = null,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            Initialise();
-            AddInConditionToCurrentGroup(selector,
-                values,
-                LogicalOperator.NotSet,
-                alias,
-                tableName,
-                tableSchema);
-            return this;
-        }
-        #region New 2018.8.20
-        public IWhereClauseBuilder And<TEntity>(Expression<Func<TEntity, bool>> expression,
-           TableAlias alias,
-           string tableName = null,
-           string tableSchema = null)
-        {
-            if (string.IsNullOrWhiteSpace(Sql()))
-            {
-                return Where<TEntity>(expression, alias, false,
-                tableName,
-                tableSchema);
-            }
-            else
-            {
-                return And<TEntity>(expression, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-
-        }
-
-        public IWhereClauseBuilder AndBetween<TEntity, TMember>(Expression<Func<TEntity, TMember>> selector,
-           TMember start,
-           TMember end,
-           TableAlias alias,
-            string tableName = null,
-            string tableSchema = null)
-        {
-
-            if (string.IsNullOrWhiteSpace(Sql()))
-            {
-                return WhereBetween<TEntity, TMember>(selector, start, end, alias, false,
-                tableName,
-                tableSchema);
-            }
-            else
-            {
-                return AndBetween<TEntity, TMember>(selector, start, end, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-
-
-        }
-
-        public IWhereClauseBuilder AndIn<TEntity, TMember>(Expression<Func<TEntity, TMember>> selector,
-            TMember[] values, TableAlias alias,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            if (string.IsNullOrWhiteSpace(Sql()))
-            {
-                return WhereIn<TEntity, TMember>(selector, values, alias, false,
-                tableName,
-                tableSchema);
-            }
-            else
-            {
-                return AndIn<TEntity, TMember>(selector, values, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-
-        }
-
-        public IWhereClauseBuilder NestedAnd<TEntity>(Expression<Func<TEntity, bool>> expression,
-             TableAlias alias,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            if (string.IsNullOrWhiteSpace(Sql()))
-            {
-                return Where<TEntity>(expression, alias, false,
-                tableName,
-                tableSchema);
-            }
-            else
-            {
-                return NestedAnd<TEntity>(expression, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-        }
-
-        public IWhereClauseBuilder NestedOr<TEntity>(Expression<Func<TEntity, bool>> expression,
-             TableAlias alias,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            if (string.IsNullOrWhiteSpace(Sql()))
-            {
-                return Where<TEntity>(expression, alias, false,
-                tableName,
-                tableSchema);
-            }
-            else
-            {
-                return NestedOr<TEntity>(expression, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-
-        }
-
-        public IWhereClauseBuilder Or<TEntity>(Expression<Func<TEntity, bool>> expression,
-            TableAlias alias,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            if (string.IsNullOrWhiteSpace(Sql()))
-            {
-                return Where<TEntity>(expression, alias, false,
-                tableName,
-                tableSchema);
-            }
-            else
-            {
-                return Or<TEntity>(expression, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-
-        }
-
-        public IWhereClauseBuilder OrBetween<TEntity, TMember>(Expression<Func<TEntity, TMember>> selector,
-            TMember start,
-            TMember end,
-            TableAlias alias,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            if (string.IsNullOrWhiteSpace(Sql()))
-            {
-                return WhereBetween<TEntity, TMember>(selector, start, end, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-            else
-            {
-                return OrBetween<TEntity, TMember>(selector, start, end, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-        }
-
-        public IWhereClauseBuilder OrIn<TEntity, TMember>(Expression<Func<TEntity, TMember>> selector,
-            TMember[] values,
-            TableAlias alias,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            if (string.IsNullOrWhiteSpace(Sql()))
-            {
-                return WhereIn<TEntity, TMember>(selector, values, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-            else
-            {
-                return OrIn<TEntity, TMember>(selector, values, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-
-        }
-
-        public IWhereClauseBuilder Where<TEntity>(Expression<Func<TEntity, bool>> expression,
-          TableAlias alias, bool ClearBeforeWhereeClause = false,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            if (string.IsNullOrWhiteSpace(Sql()) || ClearBeforeWhereeClause == true)
-            {
-                return Where<TEntity>(expression, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-            else
-            {
-                return And<TEntity>(expression, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-        }
-
-        public IWhereClauseBuilder WhereBetween<TEntity, TMember>(Expression<Func<TEntity, TMember>> selector,
-            TMember start,
-            TMember end,
-             TableAlias alias,
-             bool ClearBeforeWhereeClause = false,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            if (string.IsNullOrWhiteSpace(Sql()) || ClearBeforeWhereeClause == true)
-            {
-                return WhereBetween<TEntity, TMember>(selector, start, end, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-            else
-            {
-                return AndBetween<TEntity, TMember>(selector, start, end, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-
-
-        }
-
-        public IWhereClauseBuilder WhereIn<TEntity, TMember>(Expression<Func<TEntity, TMember>> selector,
-            TMember[] values,
-           TableAlias alias,
-           bool ClearBeforeWhereeClause = false,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            if (string.IsNullOrWhiteSpace(Sql()) || ClearBeforeWhereeClause == true)
-            {
-                return WhereIn<TEntity, TMember>(selector, values, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-            else
-            {
-                return AndIn<TEntity, TMember>(selector, values, Utils.Alias(alias),
-                tableName,
-                tableSchema);
-            }
-
-        }
-        #endregion
-
-        private void AddBetweenConditionToCurrentGroup<TEntity, TMember>(
-            Expression<Func<TEntity, TMember>> selector,
-            TMember start,
-            TMember end,
-            LogicalOperator locigalOperator,
-            string alias,
-            string tableName,
-            string tableSchema)
-        {
-            currentGroup.Conditions.Add(new WhereClauseCondition
-            {
-                Alias = alias,
-                LocigalOperator = locigalOperator,
-                LeftTable =
-                    string.IsNullOrWhiteSpace(tableName)
-                        ? TableNameFromType<TEntity>()
-                        : tableName,
-                LeftSchema =
-                    string.IsNullOrWhiteSpace(tableSchema)
-                        ? DefaultSchema
-                        : tableSchema,
-                Left = GetMemberName(ConvertExpression(selector)),
-                Operator = ">=",
-                Right = FormatValue(start)
-            });
-            currentGroup.Conditions.Add(new WhereClauseCondition
-            {
-                Alias = alias,
-                LocigalOperator = LogicalOperator.And,
-                LeftTable =
-                    string.IsNullOrWhiteSpace(tableName)
-                        ? TableNameFromType<TEntity>()
-                        : tableName,
-                LeftSchema =
-                    string.IsNullOrWhiteSpace(tableSchema)
-                        ? DefaultSchema
-                        : tableSchema,
-                Left = GetMemberName(ConvertExpression(selector)),
-                Operator = "<=",
-                Right = FormatValue(end)
-            });
-            IsClean = false;
-        }
-
-        private IWhereClauseBuilder AddConditionToCurrentGroup<TEntity>(
-            Expression<Func<TEntity, bool>> expression,
-            LogicalOperator locigalOperator,
-            string alias = null,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            ThrowIfNotInitialised();
-            IsClean = false;
-
-            var operatorString = GetOperator(expression);
-            var @value = FormatValue(GetExpressionValue(expression));
-            var actualOperator = GetActualOperator(operatorString, @value);
-            currentGroup.Conditions.Add(new WhereClauseCondition
-            {
-                Alias = alias,
-                LocigalOperator = locigalOperator,
-                LeftTable =
-                    string.IsNullOrWhiteSpace(tableName)
-                        ? TableNameFromType<TEntity>()
-                        : tableName,
-                LeftSchema =
-                    string.IsNullOrWhiteSpace(tableSchema)
-                        ? ClauseBuilder.DefaultSchema
-                        : tableSchema,
-                Left = GetMemberName(expression),
-                Operator = actualOperator,
-                Right = @value
-            });
-            return this;
-        }
-
-        private void AddInConditionToCurrentGroup<TEntity, TMember>(
-            Expression<Func<TEntity, TMember>> selector,
-            TMember[] values,
-            LogicalOperator locigalOperator,
-            string alias,
-            string tableName,
-            string tableSchema)
-        {
-            if (values != null && values.Any())
-            {
-                currentGroup.Conditions.Add(new WhereClauseCondition
-                {
-                    Alias = alias,
-                    LocigalOperator = locigalOperator,
-                    LeftTable =
-                        string.IsNullOrWhiteSpace(tableName)
-                            ? TableNameFromType<TEntity>()
-                            : tableName,
-                    LeftSchema =
-                        string.IsNullOrWhiteSpace(tableSchema)
-                            ? ClauseBuilder.DefaultSchema
-                            : tableSchema,
-                    Left =
-                        GetMemberName(ConvertExpression(selector)),
-                    Operator = "IN",
-                    Right =
-                        "("
-                        + string.Join(", ",
-                            values.Select(v => FormatValue(v))) + ")"
-                });
-                IsClean = false;
-            }
-        }
-
-        private IWhereClauseBuilder AddNestedGroupToCurrentGroup<TEntity>(
-            Expression<Func<TEntity, bool>> expression,
-            WhereClauseGroupType groupType,
-            string alias = null,
-            string tableName = null,
-            string tableSchema = null)
-        {
-            ThrowIfNotInitialised();
-            var newGroup = new WhereClauseGroup
-            {
-                GroupType = groupType,
-                Parent = currentGroup
-            };
-            currentGroup.Groups.Add(newGroup);
-            currentGroup = newGroup;
-            return AddConditionToCurrentGroup(expression,
-                LogicalOperator.NotSet,
-                alias,
-                tableName,
-                tableSchema);
-        }
-
-        private string GetActualOperator(string operatorString, string @value)
-        {
-            return @value != "NULL" ? operatorString : (operatorString == "=" ? "IS" : "IS NOT");
-        }
-
-        private void Initialise()
-        {
-            rootGroup = new WhereClauseGroup
-            {
-                GroupType = WhereClauseGroupType.Where
-            };
-            currentGroup = rootGroup;
-        }
-
-        private void ThrowIfNotInitialised()
-        {
-            if (rootGroup == null)
-            {
-                throw new InvalidOperationException(
-                    "Where must be used before any additional conditions can be applied.");
-            }
-        }
+      var conditions1 = currentGroup.Conditions;
+      var whereClauseCondition1 = new WhereClauseCondition();
+      whereClauseCondition1.Alias = alias;
+      whereClauseCondition1.LocigalOperator = locigalOperator;
+      whereClauseCondition1.LeftTable = string.IsNullOrWhiteSpace(tableName) ? TableNameFromType<TEntity>() : tableName;
+      whereClauseCondition1.LeftSchema = string.IsNullOrWhiteSpace(tableSchema) ? "dbo" : tableSchema;
+      whereClauseCondition1.Left = GetMemberColumnName(ConvertExpression(selector));
+      whereClauseCondition1.Operator = ">=";
+      whereClauseCondition1.Right = FormatValue(start);
+      conditions1.Add(whereClauseCondition1);
+      var conditions2 = currentGroup.Conditions;
+      var whereClauseCondition2 = new WhereClauseCondition();
+      whereClauseCondition2.Alias = alias;
+      whereClauseCondition2.LocigalOperator = LogicalOperator.And;
+      whereClauseCondition2.LeftTable = string.IsNullOrWhiteSpace(tableName) ? TableNameFromType<TEntity>() : tableName;
+      whereClauseCondition2.LeftSchema = string.IsNullOrWhiteSpace(tableSchema) ? "dbo" : tableSchema;
+      whereClauseCondition2.Left = GetMemberColumnName(ConvertExpression(selector));
+      whereClauseCondition2.Operator = "<=";
+      whereClauseCondition2.Right = FormatValue(end);
+      conditions2.Add(whereClauseCondition2);
+      IsClean = false;
     }
+
+    protected override IWhereClauseBuilder AddConditionToCurrentGroup<TEntity>(
+      Expression<Func<TEntity, bool>> expression,
+      LogicalOperator locigalOperator,
+      string alias = null,
+      string tableName = null,
+      string tableSchema = null)
+    {
+      ThrowIfNotInitialised();
+      IsClean = false;
+      var conditions = currentGroup.Conditions;
+      var whereClauseCondition = new WhereClauseCondition();
+      whereClauseCondition.Alias = alias;
+      whereClauseCondition.LocigalOperator = locigalOperator;
+      whereClauseCondition.LeftTable = string.IsNullOrWhiteSpace(tableName) ? TableNameFromType<TEntity>() : tableName;
+      whereClauseCondition.LeftSchema = string.IsNullOrWhiteSpace(tableSchema) ? "dbo" : tableSchema;
+      whereClauseCondition.Left = "_LambdaTree_";
+      whereClauseCondition.Right = AtkExpressionWriterSql<TEntity>.AtkWhereWriteToString(expression, AtkExpSqlType.atkWhere, "[", "]");
+      conditions.Add(whereClauseCondition);
+      return this;
+    }
+
+    protected override void AddInConditionToCurrentGroup<TEntity, TMember>(
+      Expression<Func<TEntity, TMember>> selector,
+      TMember[] values,
+      LogicalOperator locigalOperator,
+      string alias,
+      string tableName,
+      string tableSchema)
+    {
+      if (values == null || !values.Any())
+        return;
+      var conditions = currentGroup.Conditions;
+      var whereClauseCondition = new WhereClauseCondition();
+      whereClauseCondition.Alias = alias;
+      whereClauseCondition.LocigalOperator = locigalOperator;
+      whereClauseCondition.LeftTable = string.IsNullOrWhiteSpace(tableName) ? TableNameFromType<TEntity>() : tableName;
+      whereClauseCondition.LeftSchema = string.IsNullOrWhiteSpace(tableSchema) ? "dbo" : tableSchema;
+      whereClauseCondition.Left = GetMemberColumnName(ConvertExpression(selector));
+      whereClauseCondition.Operator = "IN";
+      whereClauseCondition.Right = "(" + string.Join(", ", values.Select(v => FormatValue(v))) + ")";
+      conditions.Add(whereClauseCondition);
+      IsClean = false;
+    }
+
+    protected override IWhereClauseBuilder AddNestedGroupToCurrentGroup<TEntity>(
+      Expression<Func<TEntity, bool>> expression,
+      WhereClauseGroupType groupType,
+      string alias = null,
+      string tableName = null,
+      string tableSchema = null)
+    {
+      ThrowIfNotInitialised();
+      var whereClauseGroup1 = new WhereClauseGroup();
+      whereClauseGroup1.GroupType = groupType;
+      whereClauseGroup1.Parent = currentGroup;
+      var whereClauseGroup2 = whereClauseGroup1;
+      currentGroup.Groups.Add(whereClauseGroup2);
+      currentGroup = whereClauseGroup2;
+      return AddConditionToCurrentGroup(expression, LogicalOperator.NotSet, alias, tableName, tableSchema);
+    }
+
+    protected override void Initialise()
+    {
+      var whereClauseGroup = new WhereClauseGroup();
+      whereClauseGroup.GroupType = WhereClauseGroupType.Where;
+      rootGroup = whereClauseGroup;
+      currentGroup = rootGroup;
+    }
+  }
 }

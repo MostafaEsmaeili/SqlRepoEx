@@ -1,18 +1,12 @@
-﻿using System;
-using System.Configuration;
-using SqlRepoEx.Abstractions;
-using SqlRepoEx.SqlServer.Abstractions;
+﻿using System.Configuration;
 
-namespace SqlRepoEx.SqlServer.ConnectionProviders
+namespace SqlRepoEx.MsSqlServer.ConnectionProviders
 {
-    public class AppConfigFirstConnectionProvider : ISqlConnectionProvider
+    public class AppConfigFirstConnectionProvider : MsSqlConnectionProvider
     {
-       
-        public TConnection Provide<TConnection>()
-            where TConnection: class, IConnection
+        public AppConfigFirstConnectionProvider()
         {
-            var connectionString = ConfigurationManager.ConnectionStrings[0].ConnectionString;
-            return new SqlConnectionAdapter(connectionString) as TConnection;
+            ConnectionString = ConfigurationManager.ConnectionStrings[0].ConnectionString;
         }
     }
 }

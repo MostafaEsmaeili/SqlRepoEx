@@ -1,24 +1,23 @@
-﻿using System;
+﻿// Decompiled with JetBrains decompiler
+// Type: SqlRepoEx.MsSqlServer.OrderSpecification
+// Assembly: SqlRepoEx.MsSqlServer, Version=2.2.4.0, Culture=neutral, PublicKeyToken=null
+// MVID: F98FB123-BD81-4CDB-A0A3-937FD86504A0
+// Assembly location: C:\Users\m.esmaeili\.nuget\packages\sqlrepoex.mssqlserver\2.2.4\lib\netstandard2.0\SqlRepoEx.MsSqlServer.dll
 
-namespace SqlRepoEx.SqlServer
+using SqlRepoEx.Core;
+
+namespace SqlRepoEx.MsSqlServer
 {
-    public class OrderSpecification
+  public class OrderSpecification : OrderSpecificationBase
+  {
+    public override string ToString()
     {
-        public string Alias { get; internal set; }
-        public OrderByDirection Direction { get; internal set; }
-        public Type EntityType { get; internal set; }
-        public string Identifer { get; internal set; }
-        internal string Schema { get; set; }
-        internal string TableName { get; set; }
-
-        public override string ToString()
-        {
-            var prefix = string.IsNullOrEmpty(this.Alias)
-                             ? $"[{this.Schema}].[{this.TableName}]"
-                             : $"[{this.Alias}]";
-
-            var suffix = this.Direction == OrderByDirection.Descending? "DESC": "ASC";
-            return $"{prefix}.[{this.Identifer}] {suffix}";
-        }
+      string str;
+      if (!string.IsNullOrEmpty(Alias))
+        str = "[" + Alias + "]";
+      else
+        str = "[" + Schema + "].[" + TableName + "]";
+      return str + ".[" + Identifer + "] " + (Direction == OrderByDirection.Descending ? "DESC" : "ASC");
     }
+  }
 }
